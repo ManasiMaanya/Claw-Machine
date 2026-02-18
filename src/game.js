@@ -1,6 +1,4 @@
-// ════════════════════════════════════════════════════════
 //  CLAW MACHINE  –  fully self-contained, no CDN needed
-// ════════════════════════════════════════════════════════
 
 // ── PLUSH DATA ───────────────────────────────────────────
 const PLUSH_DATA = [
@@ -22,8 +20,6 @@ const PLUSH_DATA = [
   { id:'cat',        name:'Kitty',           emoji:'🐱', color:'#fddd91', rarity:'common'     },
   { id:'fox',        name:'Foxy',            emoji:'🦊', color:'#f9c28c', rarity:'rare'       },
 ];
-
-
 
 const RARITY_ODDS = { common:0.45, uncommon:0.30, rare:0.18, 'ultra-rare':0.07 };
 
@@ -604,7 +600,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }, 1500);
     });
-    console.log('✅ Secret mode ready: Click "Claw Machine" title to toggle');
+    console.log(' Secret mode ready: Click "Claw Machine" title to toggle');
   }
 
   // Title bar
@@ -653,3 +649,4 @@ window.addEventListener('DOMContentLoaded', () => {
   showPage('landing');
   console.log('Claw Machine ready!');
 });
+
