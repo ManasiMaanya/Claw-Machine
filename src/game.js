@@ -4,25 +4,26 @@
 
 // ── PLUSH DATA ───────────────────────────────────────────
 const PLUSH_DATA = [
-  { id:'bunny',    name:'Strawberry Bunny',  emoji:'🐰', color:'#ffb3d9', rarity:'common'     },
-  { id:'bear',     name:'Angel Bear',        emoji:'🧸', color:'#d9a3d9', rarity:'uncommon'   },
-  { id:'cat',      name:'Cloud Cat',         emoji:'🐱', color:'#ffc3e6', rarity:'common'     },
-  { id:'fox',      name:'Moon Fox',          emoji:'🦊', color:'#ffcc99', rarity:'rare'       },
-  { id:'dog',      name:'Star Puppy',        emoji:'🐶', color:'#ffe0a0', rarity:'common'     },
-  { id:'panda',    name:'Candy Panda',       emoji:'🐼', color:'#e0e0e0', rarity:'uncommon'   },
-  { id:'unicorn',  name:'Rainbow Unicorn',   emoji:'🦄', color:'#e0b0ff', rarity:'ultra-rare' },
-  { id:'koala',    name:'Dream Koala',       emoji:'🐨', color:'#c8d8c8', rarity:'rare'       },
-  { id:'hamster',  name:'Cupcake Hamster',   emoji:'🐹', color:'#ffa5cc', rarity:'uncommon'   },
-  { id:'frog',     name:'Sparkle Frog',      emoji:'🐸', color:'#b8f0b8', rarity:'common'     },
-  { id:'pig',      name:'Royal Pig',         emoji:'🐷', color:'#ffb3cc', rarity:'rare'       },
-  { id:'owl',      name:'Cosmic Owl',        emoji:'🦉', color:'#b3b3ff', rarity:'ultra-rare' },
-  { id:'chick',    name:'Baby Chick',        emoji:'🐥', color:'#fff0a0', rarity:'common'     },
-  { id:'penguin',  name:'Ice Penguin',       emoji:'🐧', color:'#c8e8ff', rarity:'uncommon'   },
-  { id:'dragon',   name:'Mini Dragon',       emoji:'🐲', color:'#b8ffb8', rarity:'rare'       },
-  { id:'dino',     name:'Pastel Dino',       emoji:'🦕', color:'#c8ffcc', rarity:'uncommon'   },
-  { id:'axolotl',  name:'Axolotl Pal',       emoji:'🦎', color:'#ffc8e8', rarity:'rare'       },
-  { id:'shrimp',   name:'Lucky Shrimp',      emoji:'🍤', color:'#ffd0a8', rarity:'ultra-rare' },
+  { id:'peach',      name:'Peach Bun',       emoji:'🍑', color:'#fec69e', rarity:'common'     },
+  { id:'penguin',    name:'Waddle Penguin',  emoji:'🐧', color:'#baddf5', rarity:'uncommon'   },
+  { id:'chick',      name:'Baby Chick',      emoji:'🐥', color:'#f5e8a9', rarity:'common'     },
+  { id:'panda',      name:'Panda Baby',      emoji:'🐼', color:'#cab4f8', rarity:'uncommon'   },
+  { id:'bunny',      name:'Pink Bunny',      emoji:'🐰', color:'#ffd4e7', rarity:'common'     },
+  { id:'bear',       name:'Teddy Bear',      emoji:'🧸', color:'#fbe2cb', rarity:'uncommon'   },
+  { id:'ghost',      name:'Boo Ghost',       emoji:'👻', color:'#fcbfbf', rarity:'common'     },
+  { id:'star',       name:'Twinkle Star',    emoji:'⭐', color:'#fff9c6', rarity:'common'     },
+  { id:'parrot',     name:'Rainbow Parrot',  emoji:'🦜', color:'#ccf8d8', rarity:'ultra-rare' },
+  { id:'penguin',    name:'Waddle Penguin',  emoji:'🐧', color:'#baddf5', rarity:'uncommon'   },
+  { id:'hamster',    name:'Hammy',           emoji:'🐹', color:'#f8dbc5', rarity:'common'     },
+  { id:'pig',        name:'Pinky Pig',       emoji:'🐷', color:'#feb9d7', rarity:'common'     },
+  { id:'dog',        name:'Puppy',           emoji:'🐶', color:'#fff0db', rarity:'common'     },
+  { id:'koala',      name:'Sleepy Koala',    emoji:'🐨', color:'#cacaca', rarity:'uncommon'   },
+  { id:'frog',       name:'Hoppy Frog',      emoji:'🐸', color:'#c3fdc3', rarity:'common'     },
+  { id:'cat',        name:'Kitty',           emoji:'🐱', color:'#fddd91', rarity:'common'     },
+  { id:'fox',        name:'Foxy',            emoji:'🦊', color:'#f9c28c', rarity:'rare'       },
 ];
+
+
 
 const RARITY_ODDS = { common:0.45, uncommon:0.30, rare:0.18, 'ultra-rare':0.07 };
 
@@ -33,7 +34,7 @@ const PLUSH_R     = 32;      // bigger!
 const GRAVITY     = 0.38;
 const BOUNCE      = 0.32;
 const FRICTION    = 0.91;
-const PLUSH_COUNT = 20;      // lots more!
+const PLUSH_COUNT = 25;      // lots more!
 const FLOOR_Y     = CH - 44;
 const WALL_L      = 38;      // inside the wall graphics
 const WALL_R      = CW - 38;
@@ -50,6 +51,7 @@ let canvas, ctx;
 let prevPage     = 'landing';
 let saveData     = { collection:{}, totalWins:0, theme:1 };
 let currentTheme = 1;
+let riggedMode   = false;  // Secret hard mode
 
 // ── PHYSICS BODY ─────────────────────────────────────────
 function makeBody(x, y, data) {
@@ -152,9 +154,8 @@ function draw() {
   ctx.fillStyle = tc.wall;
   ctx.fillRect(0, 0, CW, CH);
 
-  // ── Inner play area — clean solid color, no overlay
-  ctx.fillStyle = tc.inner;
-  ctx.fillRect(WALL_L, 0, WALL_R - WALL_L, FLOOR_Y);
+  // ── Inner play area — transparent (no white bg)
+  // Skip drawing inner bg - let theme background show through
 
   // ── Floor — solid stripe at bottom
   ctx.fillStyle = tc.floor;
@@ -224,37 +225,36 @@ function drawPlush(p) {
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
 
-  // Drop shadow — small and dark, no bleed
-  ctx.beginPath();
-  ctx.arc(2, 4, p.r, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(0,0,0,0.18)';
-  ctx.fill();
+  // Soft drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.18)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 3;
 
-  // Main circle — FULL saturation, no overlay on top
+  // Pastel circle - covers 95% of emoji
+  const circleR = p.r * 0.95;
   ctx.beginPath();
-  ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+  ctx.arc(0, 0, circleR, 0, Math.PI * 2);
   ctx.fillStyle = p.data.color;
   ctx.fill();
 
-  // White border only — no glow ring that bleeds
+  // Thin white border
   ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth   = 3;
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  // Tiny gloss dot top-left only (not a full arc overlay)
-  ctx.beginPath();
-  ctx.arc(-p.r * 0.30, -p.r * 0.30, p.r * 0.22, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.45)';
-  ctx.fill();
+  // Clear shadow for emoji
+  ctx.shadowColor = 'transparent';
 
-  // Emoji
-  ctx.font = `${p.r * 1.45}px Arial`;
-  ctx.textAlign    = 'center';
+  // Large emoji on top - slightly bigger than circle so parts peek out
+  ctx.font = `${p.r * 1.8}px Arial`;
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(p.data.emoji, 0, 2);
+  ctx.fillText(p.data.emoji, 0, 0);
 
   ctx.restore();
 }
+
 
 function drawClaw(x, y) {
   ctx.save();
@@ -332,8 +332,15 @@ async function dropClaw() {
   grabbedPlush = null;
   const lockedX = clawX;
 
-  // 1 ── Drop down smoothly
-  while (clawY < FLOOR_Y - 58) {
+  // 1 ── Drop down to random height (top/middle/bottom of plush layer)
+  const dropChoices = [
+    FLOOR_Y - 180,  // top of plushies
+    FLOOR_Y - 120,  // middle layer
+    FLOOR_Y - 58    // near floor
+  ];
+  const targetDrop = dropChoices[Math.floor(Math.random() * dropChoices.length)];
+  
+  while (clawY < targetDrop) {
     clawY += 10;
     await tick(14);
   }
@@ -362,7 +369,8 @@ async function dropClaw() {
   await tick(160);
 
   // 3 ── Lift — grabbed plush follows claw position via draw()
-  const willSucceed = grabbedPlush !== null && Math.random() < 0.65;
+  const successRate = riggedMode ? 0.05 : 0.65;  // 5% when rigged, 65% normal
+  const willSucceed = grabbedPlush !== null && Math.random() < successRate;
   let didDrop = false;
 
   while (clawY > 0) {
@@ -480,19 +488,19 @@ const THEMES = ['theme-pink', 'theme-lavender', 'theme-blue'];
 function getThemeColors() {
   if (currentTheme === 1) return {
     inner:    '#fff0f7',   // clean white-pink play area — no cast
-    wall:     '#ffadd5',   // solid pink walls
+    wall:     '#f8b8d7',   // solid pink walls
     wallDark: '#f472b6',   // darker pink for rail/edges
     floor:    '#f9a8d4',   // pink floor
   };
   if (currentTheme === 2) return {
     inner:    '#f5f0ff',   // clean white-lavender play area
-    wall:     '#c084fc',   // solid lavender walls
+    wall:     '#d2a7fe',   // solid lavender walls
     wallDark: '#a855f7',   // darker purple rail
     floor:    '#c4b5fd',   // lavender floor
   };
   return {
     inner:    '#f0f8ff',   // clean white-blue play area
-    wall:     '#60a5fa',   // solid blue walls
+    wall:     '#94c2fb',   // solid blue walls
     wallDark: '#3b82f6',   // darker blue rail
     floor:    '#93c5fd',   // blue floor
   };
@@ -568,6 +576,37 @@ window.addEventListener('DOMContentLoaded', () => {
   loadSave();
   document.body.className = THEMES[currentTheme - 1];
 
+  // Secret rigged mode - single click title
+  const titleText = document.querySelector('.title-text');
+  if (titleText) {
+    titleText.style.cursor = 'pointer';
+    titleText.addEventListener('click', (e) => {
+      e.stopPropagation();
+      riggedMode = !riggedMode;
+      const msg = riggedMode ? '😈 RIGGED MODE ON (5% win)' : '😊 Normal mode (65% win)';
+      console.log(msg);
+      alert(msg);  // Make it super obvious
+      
+      const orig = titleText.textContent;
+      titleText.textContent = riggedMode ? '😈 RIGGED' : '😊 Fair';
+      titleText.style.color = riggedMode ? '#ff0000' : '#000';
+      titleText.style.fontWeight = riggedMode ? '900' : '';
+      
+      // Keep showing mode indicator
+      setTimeout(() => {
+        titleText.textContent = orig;
+        if (riggedMode) {
+          titleText.style.color = '#cc0000';
+          titleText.style.fontWeight = '900';
+        } else {
+          titleText.style.color = '';
+          titleText.style.fontWeight = '';
+        }
+      }, 1500);
+    });
+    console.log('✅ Secret mode ready: Click "Claw Machine" title to toggle');
+  }
+
   // Title bar
   document.getElementById('btn-close').onclick    = () => window.close();
   document.getElementById('btn-minimize').onclick = () => {
@@ -612,5 +651,5 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   showPage('landing');
-  console.log('✅ Claw Machine ready!');
+  console.log('Claw Machine ready!');
 });
