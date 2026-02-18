@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Claw Machine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-pink">
+
+  <!-- ═══════════════════════════════ TITLE BAR ═══════════════════════════════ -->
+  <div id="titlebar">
+    <div id="drag-region">
+      <span class="title-icon">🧸</span>
+      <span class="title-text">Claw Machine</span>
+    </div>
+    <div id="titlebar-btns">
+      <button class="tb-btn" id="btn-inventory" title="Collection">🎒</button>
+      <button class="tb-btn" id="btn-theme" title="Change Theme">🎨</button>
+      <button class="tb-btn" id="btn-minimize" title="Minimize">−</button>
+      <button class="tb-btn tb-close" id="btn-close" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ PAGES ═══════════════════════════════════ -->
+
+  <!-- PAGE: LANDING -->
+  <div id="page-landing" class="page active">
+    <div class="landing-inner">
+      <div class="landing-deco">
+        <span>🐰</span><span>🐱</span><span>🦄</span><span>🐼</span><span>🐶</span>
+      </div>
+      <h1 class="landing-title">Claw<br>Machine</h1>
+      <p class="landing-sub">Pick your plushie!</p>
+      <button class="btn-main" id="btn-play">✨ Test Your Luck</button>
+      <div class="landing-deco bottom">
+        <span>🧸</span><span>🐸</span><span>🦊</span><span>🐹</span><span>🐷</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: GAME -->
+  <div id="page-game" class="page">
+    <div id="game-ui">
+      <div id="game-header">
+        <button class="btn-back" id="btn-back-game">← Back</button>
+        <span id="game-title-text">Drop the Claw!</span>
+        <span id="win-count-badge">🏆 <span id="win-count">0</span></span>
+      </div>
+      <canvas id="canvas"></canvas>
+      <p id="game-hint">Move mouse · Click to drop</p>
+    </div>
+  </div>
+
+  <!-- PAGE: WIN -->
+  <div id="page-win" class="page">
+    <div class="result-inner">
+      <div class="result-stars">⭐✨⭐</div>
+      <h1 class="result-title win-title">You Win!!</h1>
+      <div class="result-plush-circle" id="win-plush-display"></div>
+      <p class="result-name" id="win-plush-name"></p>
+      <div class="result-rarity" id="win-plush-rarity"></div>
+      <button class="btn-main" id="btn-play-again-win">Play Again</button>
+    </div>
+  </div>
+
+  <!-- PAGE: LOSE -->
+  <div id="page-lose" class="page">
+    <div class="result-inner">
+      <div class="result-stars">💔🌧️💔</div>
+      <h1 class="result-title lose-title">Oh No!</h1>
+      <div class="lose-claw">🦾</div>
+      <p class="lose-msg">So close! Try again?</p>
+      <button class="btn-main" id="btn-play-again-lose">Play Again</button>
+    </div>
+  </div>
+
+  <!-- PAGE: INVENTORY -->
+  <div id="page-inventory" class="page">
+    <div id="inventory-header">
+      <button class="btn-back" id="btn-back-inv">← Back</button>
+      <span>My Collection</span>
+      <span id="inv-progress"></span>
+    </div>
+    <div id="inventory-grid"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
